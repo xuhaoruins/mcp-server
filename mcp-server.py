@@ -75,9 +75,9 @@ mongodb_client = pymongo.MongoClient(connection_string)
 # Azure OpenAI configuration
 openai_api_key = os.environ.get("AZURE_OPENAI_API_KEY")
 openai_api_base = os.environ.get("AZURE_OPENAI_ENDPOINT")
-chat_model = os.environ.get("AZURE_OPENAI_CHAT_MODEL", "gpt-4")  # 使用环境变量或默认值
-embedding_model = os.environ.get("AZURE_OPENAI_EMBEDDING_MODEL", "text-embedding-ada-002")
-temperature = float(os.environ.get("AZURE_OPENAI_TEMPERATURE", "0.1"))
+chat_model = os.environ.get("AZURE_OPENAI_CHAT_MODEL")  # 使用环境变量或默认值
+embedding_model = os.environ.get("AZURE_OPENAI_EMBEDDING_MODEL")
+temperature = float(os.environ.get("AZURE_OPENAI_TEMPERATURE"))
 
 def load_index(collection):
     """Load a vector index from Azure Cosmos DB MongoDB."""
@@ -121,18 +121,20 @@ def setup_llm_and_embeddings(api_key=openai_api_key, api_base=openai_api_base,
                            temp=temperature):
     """Set up LLM and embedding models."""
     llm = AzureOpenAI(
+        model=chat_model_name,
         deployment_name=chat_model_name,
         api_key=api_key,
         azure_endpoint=api_base,
-        api_version="2023-05-15",
+        api_version="2024-10-21",
         temperature=temp,
     )
 
     embedding = AzureOpenAIEmbedding(
+        model=embed_model_name,
         deployment_name=embed_model_name,
         azure_endpoint=api_base,
         api_key=api_key,
-        api_version="2023-05-15",
+        api_version="2024-10-21",
     )
 
     Settings.llm = llm
