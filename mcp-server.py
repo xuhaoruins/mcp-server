@@ -121,20 +121,18 @@ def setup_llm_and_embeddings(api_key=openai_api_key, api_base=openai_api_base,
                            temp=temperature):
     """Set up LLM and embedding models."""
     llm = AzureOpenAI(
-        model=chat_model_name,
         deployment_name=chat_model_name,
         api_key=api_key,
         azure_endpoint=api_base,
-        api_version="2024-10-21",
+        api_version="2023-05-15",
         temperature=temp,
     )
 
     embedding = AzureOpenAIEmbedding(
-        model=embed_model_name,
         deployment_name=embed_model_name,
         azure_endpoint=api_base,
         api_key=api_key,
-        api_version="2024-10-21",
+        api_version="2023-05-15",
     )
 
     Settings.llm = llm
@@ -387,7 +385,6 @@ async def make_nws_request(url: str) -> dict[str, Any] | None:
         except Exception:
             return None
 
-
 def format_alert(feature: dict) -> str:
     """Format an alert feature into a readable string."""
     props = feature["properties"]
@@ -398,7 +395,6 @@ Severity: {props.get('severity', 'Unknown')}
 Description: {props.get('description', 'No description available')}
 Instructions: {props.get('instruction', 'No specific instructions provided')}
 """
-
 
 @mcp.tool()
 async def get_alerts(state: str) -> str:
@@ -418,7 +414,6 @@ async def get_alerts(state: str) -> str:
 
     alerts = [format_alert(feature) for feature in data["features"]]
     return "\n---\n".join(alerts)
-
 
 @mcp.tool()
 async def get_forecast(latitude: float, longitude: float) -> str:
@@ -467,10 +462,10 @@ async def get_azure_price(filter_expression: str) -> str:
     # URL encode the filter expression
     encoded_filter = quote(filter_expression)
     api_version = "2023-01-01-preview"
-    base_url = f"{AZURE_PRICE_API_BASE}?api-version={api_version}&$filter={encoded_filter}"
+    price_url = f"{AZURE_PRICE_API_BASE}?api-version={api_version}&$filter={encoded_filter}"
     
     all_items = []
-    next_page_url = base_url
+    next_page_url = price_url
     page_count = 0
     max_pages = 3  # Limit to 3 pages to avoid timeouts
     
@@ -564,7 +559,7 @@ if __name__ == "__main__":
 
     import argparse
     
-    parser = argparse.ArgumentParser(description='Run LlamaIndex MCP SSE-based server')
+    parser = argparse.ArgumentParser(description='Run MCP SSE-based server')
     parser.add_argument('--host', default='0.0.0.0', help='Host to bind to')
     parser.add_argument('--port', type=int, default=8080, help='Port to listen on')
     args = parser.parse_args()
