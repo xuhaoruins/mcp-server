@@ -1,14 +1,7 @@
 mcp
-llama-index
-llama-index-vector-stores-azurecosmosmongo
-llama-index-llms-azure-openai
-llama-index-embeddings-azure-openai
 openai
 mcp
 pandas
 nltk
 legal-documents-cn
-langchain
-langchain-community
-azure-cosmos
 python-dotenv

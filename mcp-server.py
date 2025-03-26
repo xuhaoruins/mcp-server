@@ -11,10 +11,10 @@ from starlette.requests import Request
 from starlette.routing import Mount, Route
 from mcp.server import Server
 from legal_documents_cn import criminal_law_cn as law
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-# 加载环境变量
-load_dotenv()
+# # 加载环境变量
+# load_dotenv()
 
 # Initialize FastMCP server
 mcp = FastMCP("haxu-mcp-server")
