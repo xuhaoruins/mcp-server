@@ -8,3 +8,7 @@ mcp
 pandas
 nltk
 legal-documents-cn
+langchain
+langchain-community
+azure-cosmos
+python-dotenv
