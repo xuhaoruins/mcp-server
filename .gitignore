@@ -20,7 +20,7 @@ smithery.yaml
 *.log
 
 # IDE and editor files
-.vscode/
+
 .idea/
 *.swp
 venv
