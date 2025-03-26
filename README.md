@@ -33,7 +33,6 @@ Model Context Protocol (MCP) 服务器，提供各种工具接口，包括法律
 ## 前提条件
 
 - Python 3.10 或更高版本
-- MongoDB 或 Azure Cosmos DB (可选，用于向量存储)
 - Docker (可选，用于容器化部署)
 
 ## 安装指南
@@ -202,10 +201,8 @@ az webapp config container set \
 
 1. MCP服务器部署到Azure Container Apps，提供自动扩展能力
 2. Azure函数部署在单独的Function App中
-3. 将MongoDB部署到Azure Cosmos DB (使用MongoDB API)
-4. 使用Azure Key Vault存储敏感凭据
-5. 使用Azure Application Insights进行监控
-6. 使用Azure Front Door作为前端，提供CDN和安全功能
+3. 使用Azure Application Insights进行监控
+4. 使用Azure Front Door作为前端，提供CDN和安全功能
 
 ## 添加新工具
 
