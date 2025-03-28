@@ -1,5 +1,4 @@
 import uvicorn
-import pymongo
 import os
 from typing import Any
 import httpx
@@ -11,10 +10,10 @@ from starlette.requests import Request
 from starlette.routing import Mount, Route
 from mcp.server import Server
 from legal_documents_cn import criminal_law_cn as law
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
-# # 加载环境变量
-# load_dotenv()
+# 加载环境变量
+load_dotenv()
 
 # Initialize FastMCP server
 mcp = FastMCP("haxu-mcp-server")
@@ -30,7 +29,8 @@ def create_starlette_app(mcp_server: Server, *, debug: bool = False) -> Starlett
                 request.receive,
                 request._send,  # noqa: SLF001
         ) as (read_stream, write_stream):
-            await mcp_server.run(99
+            await mcp_server.run(
+                99,
                 read_stream,
                 write_stream,
                 mcp_server.create_initialization_options(),
