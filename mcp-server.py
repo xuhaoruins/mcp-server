@@ -11,6 +11,8 @@ from starlette.routing import Mount, Route
 from mcp.server import Server
 from legal_documents_cn import criminal_law_cn as law
 from dotenv import load_dotenv
+from supabase import create_client
+from langchain_openai import AzureOpenAIEmbeddings
 
 # 加载环境变量
 load_dotenv()
@@ -321,6 +323,96 @@ async def count_chinese_characters(text: str) -> str:
 ###########################
 #####http mcp tools
 ###########################      
+
+
+###########################
+#####vector search tools
+###########################    
+@mcp.tool()
+def gdpr_semantic_search(query_text):
+    """
+    Perform semantic search against the GDPR. 
+
+    GDPR is a comprehensive data protection and privacy regulation enacted by the European Union that came into effect on May 25, 2018. 
+    It represents one of the most significant and stringent privacy laws in the world.
+    
+    Args:
+        query_text (str): The text of search query
+        
+    Returns:
+        list: Raw matching documents with similarity scores, containing up to 3 results
+              with similarity above 0.5 threshold
+    """
+    # Initialize Supabase client
+    supabase = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_KEY"])
+    
+    # Initialize Azure OpenAI embedding model
+    embedding_model = AzureOpenAIEmbeddings(
+        azure_deployment="text-embedding-ada-002",
+        model="text-embedding-ada-002",
+        api_version=os.environ["AZURE_OPENAI_API_VERSION"]
+    )
+    # Generate embedding for the query text using Azure OpenAI
+    query_embedding = embedding_model.embed_query(query_text)
+    
+    # Perform vector similarity search using pgvector
+    response = supabase.rpc(
+        'match_documents',
+        {
+            'query_embedding': query_embedding,
+            'match_threshold': 0.5,
+            'match_count': 3
+        }
+    ).execute()
+    
+    return response.data
+
+
+@mcp.tool()
+def China_pipl_semantic_search(query_text):
+    """
+    Perform semantic search against China PIPL.
+
+    China's Personal Information Protection Law (PIPL) is a comprehensive data protection law that regulates the processing of personal information in China.
+    PIPL is China's first comprehensive national data privacy law that came into effect on November 1, 2021. 
+    It establishes a framework for the protection of personal information in China.
+    
+    Args:
+        query_text (str): The text of search query
+
+        
+    Returns:
+        list: Raw matching documents with similarity scores, containing up to 3 results
+              with similarity above 0.5 threshold
+    """
+    # Initialize Supabase client
+    supabase = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_KEY"])
+
+    # Initialize Azure OpenAI embedding model
+    embedding_model = AzureOpenAIEmbeddings(
+        azure_deployment="text-embedding-ada-002",
+        model="text-embedding-ada-002",
+        api_version=os.environ["AZURE_OPENAI_API_VERSION"]
+    )
+
+    query_embedding = embedding_model.embed_query(query_text)
+    
+    # Search for similar content in Supabase
+    response = supabase.rpc(
+        "match_pipl_documents",
+        {
+            "query_embedding": query_embedding,
+            "match_threshold": 0.5,
+            "match_count": 3
+        }
+    ).execute()
+    
+    return response.data
+
+###########################
+#####vector search tools
+###########################  
+
 
 ## run the server
 if __name__ == "__main__":

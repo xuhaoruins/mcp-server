@@ -5,3 +5,10 @@ pandas
 nltk
 legal-documents-cn
 python-dotenv
+supabase
+pypdf
+langchain
+openai
+langchain_community
+tiktoken
+langchain_openai
