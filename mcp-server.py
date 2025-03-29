@@ -29,8 +29,8 @@ def create_starlette_app(mcp_server: Server, *, debug: bool = False) -> Starlett
                 request.receive,
                 request._send,  # noqa: SLF001
         ) as (read_stream, write_stream):
+            # Remove the integer 99 and use only the stream objects
             await mcp_server.run(
-                99,
                 read_stream,
                 write_stream,
                 mcp_server.create_initialization_options(),
@@ -135,7 +135,6 @@ async def get_all_law_contents() -> str:
 ###########################
 #####http mcp tools
 ###########################
-
 # Constants
 NWS_API_BASE = "https://api.weather.gov"
 USER_AGENT = "weather-app/1.0"
@@ -159,12 +158,12 @@ def format_alert(feature: dict) -> str:
     """Format an alert feature into a readable string."""
     props = feature["properties"]
     return f"""
-Event: {props.get('event', 'Unknown')}
-Area: {props.get('areaDesc', 'Unknown')}
-Severity: {props.get('severity', 'Unknown')}
-Description: {props.get('description', 'No description available')}
-Instructions: {props.get('instruction', 'No specific instructions provided')}
-"""
+    Event: {props.get('event', 'Unknown')}
+    Area: {props.get('areaDesc', 'Unknown')}
+    Severity: {props.get('severity', 'Unknown')}
+    Description: {props.get('description', 'No description available')}
+    Instructions: {props.get('instruction', 'No specific instructions provided')}
+    """
 
 @mcp.tool()
 async def get_alerts(state: str) -> str:
@@ -212,11 +211,11 @@ async def get_forecast(latitude: float, longitude: float) -> str:
     forecasts = []
     for period in periods[:5]:  # Only show next 5 periods
         forecast = f"""
-{period['name']}:
-Temperature: {period['temperature']}°{period['temperatureUnit']}
-Wind: {period['windSpeed']} {period['windDirection']}
-Forecast: {period['detailedForecast']}
-"""
+        {period['name']}:
+        Temperature: {period['temperature']}°{period['temperatureUnit']}
+        Wind: {period['windSpeed']} {period['windDirection']}
+        Forecast: {period['detailedForecast']}
+        """
         forecasts.append(forecast)
 
     return "\n---\n".join(forecasts)
